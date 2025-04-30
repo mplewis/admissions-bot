@@ -4,7 +4,11 @@ import { registerCommands } from "./commands";
 import { CMD, MODAL, BUTTON } from "./constants";
 import { handleEventCommand } from "./handlers/commands";
 import { handleEditModal, handleCreateModal } from "./handlers/modals";
-import { handleDeleteEvent, handleEditEvent } from "./handlers/events";
+import {
+  handleDeleteEvent,
+  handleEditEvent,
+  handleDeleteConfirm,
+} from "./handlers/events";
 
 const client = new Client({
   intents: [
@@ -43,6 +47,9 @@ client.on("interactionCreate", async (interaction) => {
         break;
       case MODAL.EVENT_EDIT:
         await handleEditModal(interaction);
+        break;
+      case MODAL.EVENT_DELETE:
+        await handleDeleteConfirm(interaction);
         break;
     }
     return;

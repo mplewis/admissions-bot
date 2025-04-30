@@ -1,6 +1,7 @@
 export const MODAL = {
   EVENT_CREATE: "event_create",
   EVENT_EDIT: "event_edit",
+  EVENT_DELETE: "event_delete",
 } as const;
 
 export const FIELD = {
