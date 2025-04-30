@@ -41,10 +41,10 @@ export async function handleDeleteEvent(interaction: ButtonInteraction) {
       new ActionRowBuilder<TextInputBuilder>().addComponents(
         new TextInputBuilder()
           .setCustomId("confirm")
-          .setLabel("Type 'delete' to confirm")
+          .setLabel("Type DELETE to confirm:")
           .setStyle(TextInputStyle.Short)
           .setRequired(true)
-          .setPlaceholder("delete")
+          .setPlaceholder("DELETE")
       )
     );
 
@@ -53,8 +53,11 @@ export async function handleDeleteEvent(interaction: ButtonInteraction) {
 
 export async function handleDeleteConfirm(interaction: ModalSubmitInteraction) {
   const confirm = interaction.fields.getTextInputValue("confirm");
-  if (confirm.toLowerCase() !== "delete") {
-    await interaction.reply({ content: "Deletion cancelled", ephemeral: true });
+  if (confirm.trim() !== "DELETE") {
+    await interaction.reply({
+      content: `Instead of DELETE, I read: "${confirm}". I have not deleted your event.`,
+      ephemeral: true,
+    });
     return;
   }
 
