@@ -11,6 +11,38 @@ import dayjs from "dayjs";
 import { BUTTON, CHANNEL, FIELD } from "./constants";
 import { parseDuration } from "./datetime";
 
+type DiscordError = {
+  _errors: Array<{ message: string; code: string }>;
+};
+
+async function handleDiscordError(
+  error: any,
+  interaction: ModalSubmitInteraction
+) {
+  console.error("Error creating/updating event:", error);
+  let errorCount: number | undefined;
+  const errors = error.rawError?.errors || {};
+  const messages = Object.values(errors)
+    .map((e) => (e as DiscordError)._errors?.[0]?.message)
+    .filter(Boolean);
+
+  if (messages.length > 0) errorCount = messages.length;
+  const countMsg = errorCount
+    ? `${errorCount} error${errorCount === 1 ? "" : "s"} occurred`
+    : "An error occurred";
+
+  const errorMsg =
+    messages.join(", ") ||
+    error.rawError?.message ||
+    "Sorry, something went wrong.";
+
+  await interaction.reply({
+    content: `${countMsg}: ${errorMsg}`,
+    ephemeral: true,
+  });
+  return false;
+}
+
 export type EventData = {
   title: string;
   description: string;
@@ -67,28 +99,32 @@ export async function createOrUpdateEvent(
   console.log({ eventDateTime, duration });
   const endDateTime = dayjs(eventDateTime).add(duration).toDate();
 
-  if (eventData.existingEventName) {
-    const events = await interaction.guild?.scheduledEvents.fetch();
-    const event = events?.find((e) => e.name === eventData.existingEventName);
-    if (event) {
-      await event.edit({
+  try {
+    if (eventData.existingEventName) {
+      const events = await interaction.guild?.scheduledEvents.fetch();
+      const event = events?.find((e) => e.name === eventData.existingEventName);
+      if (event) {
+        await event.edit({
+          name: eventData.title,
+          description: eventData.description,
+          scheduledStartTime: eventDateTime,
+          scheduledEndTime: endDateTime,
+          entityMetadata: { location: eventData.location },
+        });
+      }
+    } else {
+      await interaction.guild?.scheduledEvents.create({
         name: eventData.title,
         description: eventData.description,
         scheduledStartTime: eventDateTime,
         scheduledEndTime: endDateTime,
+        privacyLevel: 2, // Guild only
+        entityType: 3, // External
         entityMetadata: { location: eventData.location },
       });
     }
-  } else {
-    await interaction.guild?.scheduledEvents.create({
-      name: eventData.title,
-      description: eventData.description,
-      scheduledStartTime: eventDateTime,
-      scheduledEndTime: endDateTime,
-      privacyLevel: 2, // Guild only
-      entityType: 3, // External
-      entityMetadata: { location: eventData.location },
-    });
+  } catch (error: any) {
+    return handleDiscordError(error, interaction);
   }
 
   return true;
