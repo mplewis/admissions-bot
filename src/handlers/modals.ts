@@ -1,5 +1,6 @@
 import type { ModalSubmitInteraction } from "discord.js";
 import { FIELD } from "../constants";
+import { MessageFlags } from "discord.js";
 import {
   EventData,
   createEventEmbed,
@@ -41,7 +42,7 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
 
   await interaction.reply({
     content: "Event created successfully!",
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 
   clearLastUserSubmittedEvent(interaction.user.id);
@@ -68,7 +69,7 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
 
   await interaction.reply({
     content: "Event updated successfully!",
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 
   clearLastUserSubmittedEvent(interaction.user.id);

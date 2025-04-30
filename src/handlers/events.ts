@@ -3,6 +3,7 @@ import {
   TextInputBuilder,
   TextInputStyle,
   ActionRowBuilder,
+  MessageFlags,
 } from "discord.js";
 import type { ButtonInteraction, ModalSubmitInteraction } from "discord.js";
 import { MODAL } from "../constants";
@@ -15,7 +16,7 @@ export async function handleEditEvent(interaction: ButtonInteraction) {
   if (!embed) {
     await interaction.reply({
       content: "Could not find event details",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -56,7 +57,7 @@ export async function handleDeleteConfirm(interaction: ModalSubmitInteraction) {
   if (confirm.trim() !== "DELETE") {
     await interaction.reply({
       content: `Instead of DELETE, I read: "${confirm}". I have not deleted your event.`,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -65,7 +66,7 @@ export async function handleDeleteConfirm(interaction: ModalSubmitInteraction) {
   if (!message) {
     await interaction.reply({
       content: "Could not find event message",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return;
   }
@@ -78,6 +79,6 @@ export async function handleDeleteConfirm(interaction: ModalSubmitInteraction) {
 
   await interaction.reply({
     content: "Event deleted successfully!",
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
 }

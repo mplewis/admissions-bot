@@ -5,6 +5,7 @@ import {
   ChannelType,
   EmbedBuilder,
   ThreadAutoArchiveDuration,
+  MessageFlags,
 } from "discord.js";
 import type { ModalSubmitInteraction } from "discord.js";
 import dayjs from "dayjs";
@@ -38,7 +39,7 @@ async function handleDiscordError(
 
   await interaction.reply({
     content: `${countMsg}: ${errorMsg}`,
-    ephemeral: true,
+    flags: [MessageFlags.Ephemeral],
   });
   return false;
 }
@@ -91,7 +92,10 @@ export async function createOrUpdateEvent(
   const parsedDuration = parseDuration(eventData.durationStr);
 
   if (!parsedDuration.success) {
-    await interaction.reply({ content: parsedDuration.error, ephemeral: true });
+    await interaction.reply({
+      content: parsedDuration.error,
+      flags: [MessageFlags.Ephemeral],
+    });
     return false;
   }
   const { duration } = parsedDuration;
@@ -139,7 +143,7 @@ export async function findEventsChannel(interaction: ModalSubmitInteraction) {
   if (!eventsChannel || !("send" in eventsChannel)) {
     await interaction.reply({
       content: `Could not find the #${CHANNEL.EVENTS} channel to start a discussion thread for your new event. Please ask your server admin to create one.`,
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
     return null;
   }
