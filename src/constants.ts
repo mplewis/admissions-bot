@@ -1,20 +1,19 @@
 export const MODAL = {
-  EVENT_CREATE: "create-event",
-  EVENT_EDIT: "edit-event",
+  EVENT_CREATE: "event_create",
+  EVENT_EDIT: "event_edit",
 } as const;
 
 export const FIELD = {
   TITLE: "title",
   DESC: "desc",
-  DATE: "date",
-  TIME: "time",
+  DATETIME: "datetime",
   DURATION: "duration",
   LOCATION: "location",
 } as const;
 
 export const BUTTON = {
-  EDIT_EVENT: "edit-event",
-  DELETE_EVENT: "delete-event",
+  EDIT_EVENT: "edit_event",
+  DELETE_EVENT: "delete_event",
 } as const;
 
 export const CMD = {

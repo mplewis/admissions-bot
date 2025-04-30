@@ -13,9 +13,6 @@ export async function registerCommands() {
   try {
     console.log("Started refreshing global application (/) commands.");
 
-    await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), { body: [] });
-    console.log("Deleted all existing commands.");
-
     await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), {
       body: commands,
     });

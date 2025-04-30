@@ -1,14 +1,10 @@
 import { Client, GatewayIntentBits, ChannelType } from "discord.js";
 import { CONFIG } from "./config";
 import { registerCommands } from "./commands";
-import {
-  handleEventCommand,
-  handleEventModal,
-  handleEditEvent,
-  handleDeleteEvent,
-  handleEditModal,
-} from "./handlers";
 import { CMD, MODAL, BUTTON } from "./constants";
+import { handleEventCommand } from "./handlers/commands";
+import { handleEditModal, handleCreateModal } from "./handlers/modals";
+import { handleDeleteEvent, handleEditEvent } from "./handlers/events";
 
 const client = new Client({
   intents: [
@@ -21,7 +17,6 @@ const client = new Client({
 client.once("ready", async () => {
   console.log(`Logged in as ${client.user?.tag}`);
 
-  // List all guilds
   console.log("Connected to the following guilds:");
   for (const guild of client.guilds.cache.values()) {
     const eventsChannel = guild.channels.cache.find(
@@ -30,7 +25,6 @@ client.once("ready", async () => {
     );
     console.log(`- ${guild.name} (${guild.id})${eventsChannel ? " ✓" : " ✗"}`);
   }
-  console.log(); // Empty line for readability
 
   await registerCommands();
 });
@@ -45,7 +39,7 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isModalSubmit()) {
     switch (interaction.customId) {
       case MODAL.EVENT_CREATE:
-        await handleEventModal(interaction);
+        await handleCreateModal(interaction);
         break;
       case MODAL.EVENT_EDIT:
         await handleEditModal(interaction);
