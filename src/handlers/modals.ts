@@ -8,6 +8,10 @@ import {
   findEventsChannel,
   createEventThread,
 } from "../events";
+import {
+  clearLastUserSubmittedEvent,
+  setLastUserSubmittedEvent,
+} from "../cache";
 
 export async function handleCreateModal(interaction: ModalSubmitInteraction) {
   const eventData: EventData = {
@@ -17,6 +21,7 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
     durationStr: interaction.fields.getTextInputValue(FIELD.DURATION),
     location: interaction.fields.getTextInputValue(FIELD.LOCATION),
   };
+  setLastUserSubmittedEvent(interaction.user.id, eventData);
 
   const success = await createOrUpdateEvent(interaction, eventData);
   if (!success) return;
@@ -38,6 +43,8 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
     content: "Event created successfully!",
     ephemeral: true,
   });
+
+  clearLastUserSubmittedEvent(interaction.user.id);
 }
 
 export async function handleEditModal(interaction: ModalSubmitInteraction) {
@@ -49,6 +56,7 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
     location: interaction.fields.getTextInputValue(FIELD.LOCATION),
     existingEventName: interaction.message?.embeds[0]?.title ?? undefined,
   };
+  setLastUserSubmittedEvent(interaction.user.id, eventData);
 
   const success = await createOrUpdateEvent(interaction, eventData);
   if (!success) return;
@@ -62,4 +70,6 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
     content: "Event updated successfully!",
     ephemeral: true,
   });
+
+  clearLastUserSubmittedEvent(interaction.user.id);
 }

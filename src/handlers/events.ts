@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import type { ButtonInteraction, ModalSubmitInteraction } from "discord.js";
 import { MODAL } from "../constants";
-import { createEventModalBody } from "../ui";
+import { buildEventModalBody } from "../ui";
 
 export async function handleEditEvent(interaction: ButtonInteraction) {
   const message = interaction.message;
@@ -23,7 +23,12 @@ export async function handleEditEvent(interaction: ButtonInteraction) {
   const modal = new ModalBuilder()
     .setCustomId(MODAL.EVENT_EDIT)
     .setTitle("Edit Event")
-    .addComponents(createEventModalBody(embed.toJSON()));
+    .addComponents(
+      buildEventModalBody({
+        embed: embed.toJSON(),
+        userId: interaction.user.id,
+      })
+    );
 
   await interaction.showModal(modal);
 }
