@@ -1,0 +1,20 @@
+{
+	"name": "discovent",
+	"version": "1.0.0",
+	"description": "Discord bot for managing events",
+	"main": "src/index.ts",
+	"scripts": {
+		"start": "tsx src/index.ts",
+		"dev": "tsx watch src/index.ts"
+	},
+	"dependencies": {
+		"dayjs": "^1.11.10",
+		"discord.js": "^14.14.1",
+		"dotenv": "^16.4.5",
+		"tsx": "^4.7.1"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.24",
+		"typescript": "^5.3.3"
+	}
+}
