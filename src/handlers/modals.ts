@@ -74,3 +74,36 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
 
   clearLastUserSubmittedEvent(interaction.user.id);
 }
+
+export async function handleDeleteConfirmModal(
+  interaction: ModalSubmitInteraction
+) {
+  const confirm = interaction.fields.getTextInputValue("confirm");
+  if (confirm.trim() !== "DELETE") {
+    await interaction.reply({
+      content: `Instead of DELETE, I read: "${confirm}". I have not deleted your event.`,
+      flags: [MessageFlags.Ephemeral],
+    });
+    return;
+  }
+
+  const message = interaction.message;
+  if (!message) {
+    await interaction.reply({
+      content: "Could not find event message",
+      flags: [MessageFlags.Ephemeral],
+    });
+    return;
+  }
+
+  const events = await interaction.guild?.scheduledEvents.fetch();
+  const event = events?.find((e) => e.name === message.embeds[0]?.title);
+
+  if (event) await event.delete();
+  await message.delete();
+
+  await interaction.reply({
+    content: "Event deleted successfully!",
+    flags: [MessageFlags.Ephemeral],
+  });
+}
