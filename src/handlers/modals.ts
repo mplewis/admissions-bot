@@ -1,3 +1,5 @@
+// Handlers for modal interactions
+
 import type { ModalSubmitInteraction } from "discord.js";
 import { FIELD } from "../constants";
 import { MessageFlags } from "discord.js";
@@ -14,6 +16,10 @@ import {
   setLastUserSubmittedEvent,
 } from "../cache";
 
+/**
+ * Handle submitted data from the Create Event modal.
+ * @param interaction The interaction object to use when presenting the modal
+ */
 export async function handleCreateModal(interaction: ModalSubmitInteraction) {
   const eventData: EventData = {
     title: interaction.fields.getTextInputValue(FIELD.TITLE),
@@ -48,6 +54,10 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
   clearLastUserSubmittedEvent(interaction.user.id);
 }
 
+/**
+ * Handle submitted data from the Edit Event modal.
+ * @param interaction The interaction object to use when presenting the modal
+ */
 export async function handleEditModal(interaction: ModalSubmitInteraction) {
   const eventData: EventData = {
     title: interaction.fields.getTextInputValue(FIELD.TITLE),
@@ -75,6 +85,10 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
   clearLastUserSubmittedEvent(interaction.user.id);
 }
 
+/**
+ * Handle submitted data from the Confirm Delete Event modal.
+ * @param interaction The interaction object to use when presenting the modal
+ */
 export async function handleDeleteConfirmModal(
   interaction: ModalSubmitInteraction
 ) {

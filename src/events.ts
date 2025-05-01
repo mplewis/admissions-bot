@@ -1,3 +1,5 @@
+// Work with events against the Discord API
+
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -12,10 +14,25 @@ import dayjs from "dayjs";
 import { BUTTON, CHANNEL, FIELD } from "./constants";
 import { parseDuration } from "./datetime";
 
+/** Data for a new or existing event. */
+export type EventData = {
+  title: string;
+  description: string;
+  datetime: string;
+  durationStr: string;
+  location: string;
+  existingEventName?: string;
+};
+
 type DiscordError = {
   _errors: Array<{ message: string; code: string }>;
 };
 
+/**
+ * Handle a Discord error that might occur when creating or updating an event.
+ * @param error The error to handle
+ * @param interaction The interaction object to use when presenting the error message to the user
+ */
 async function handleDiscordError(
   error: any,
   interaction: ModalSubmitInteraction
@@ -41,18 +58,13 @@ async function handleDiscordError(
     content: `${countMsg}: ${errorMsg}`,
     flags: [MessageFlags.Ephemeral],
   });
-  return false;
 }
 
-export type EventData = {
-  title: string;
-  description: string;
-  datetime: string;
-  durationStr: string;
-  location: string;
-  existingEventName?: string;
-};
-
+/**
+ * Create a message embed containing an event's data.
+ * @param eventData The event data from which to create the embed
+ * @returns The data for the embed
+ */
 export function createEventEmbed({
   title,
   description,
@@ -71,6 +83,10 @@ export function createEventEmbed({
     .setColor("#0099ff");
 }
 
+/**
+ * Create the additional buttons for an event message.
+ * @returns The data for the buttons
+ */
 export function createEventButtons() {
   return new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
@@ -84,6 +100,12 @@ export function createEventButtons() {
   );
 }
 
+/**
+ * Create or update an event in a Discord server.
+ * @param interaction The interaction object to use when presenting messages to the user
+ * @param eventData The event data from which to create or update the event
+ * @returns Whether the event was created or updated successfully
+ */
 export async function createOrUpdateEvent(
   interaction: ModalSubmitInteraction,
   eventData: EventData
@@ -100,7 +122,6 @@ export async function createOrUpdateEvent(
   }
   const { duration } = parsedDuration;
   if (!duration) return false;
-  console.log({ eventDateTime, duration });
   const endDateTime = dayjs(eventDateTime).add(duration).toDate();
 
   try {
@@ -128,12 +149,18 @@ export async function createOrUpdateEvent(
       });
     }
   } catch (error: any) {
-    return handleDiscordError(error, interaction);
+    await handleDiscordError(error, interaction);
+    return false;
   }
 
   return true;
 }
 
+/**
+ * Locate the events channel in a Discord server.
+ * @param interaction The interaction object to use when presenting messages to the user
+ * @returns The events channel, or null if it is not found
+ */
 export async function findEventsChannel(interaction: ModalSubmitInteraction) {
   const eventsChannel = interaction.guild?.channels.cache.find(
     (channel) =>
@@ -151,6 +178,11 @@ export async function findEventsChannel(interaction: ModalSubmitInteraction) {
   return eventsChannel;
 }
 
+/**
+ * Create a thread for an event attached to the event's message.
+ * @param message The message object to use when creating the thread
+ * @param title The title of the thread
+ */
 export async function createEventThread(message: any, title: string) {
   await message.startThread({
     name: `${title} Discussion`,

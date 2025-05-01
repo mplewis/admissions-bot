@@ -1,3 +1,5 @@
+// User-facing interface components for Discord end users
+
 import {
   ActionRowBuilder,
   TextInputBuilder,
@@ -16,6 +18,11 @@ const getFieldValue = (
 type WithEmbed = { embed: APIEmbed; userId: string };
 type WithUserId = { userId: string };
 
+/**
+ * Build the body of an event modal, pre-filling fields with any provided data.
+ * @param params The data to use to pre-fill the modal
+ * @returns The data for the modal
+ */
 export function buildEventModalBody(params?: WithEmbed | WithUserId) {
   if (!params) return buildModalWithData();
 

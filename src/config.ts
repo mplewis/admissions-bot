@@ -1,3 +1,5 @@
+// Configuration values used throughout the app
+
 import { config } from "dotenv";
 
 config();

@@ -27,7 +27,7 @@ client.once("ready", async () => {
       (channel) =>
         channel.name === "events" && channel.type === ChannelType.GuildText
     );
-    console.log(`- ${guild.name} (${guild.id})${eventsChannel ? " ✓" : " ✗"}`);
+    console.log(`  ${guild.name} (${guild.id})${eventsChannel ? " ✓" : " ✗"}`);
   }
 
   await registerCommands();

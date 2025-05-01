@@ -1,3 +1,5 @@
+// Handlers for interaction events
+
 import {
   ModalBuilder,
   TextInputBuilder,
@@ -9,6 +11,10 @@ import type { ButtonInteraction } from "discord.js";
 import { MODAL } from "../constants";
 import { buildEventModalBody } from "../ui";
 
+/**
+ * Handle the Edit Event button for an existing event.
+ * @param interaction The interaction object to use when presenting the modal
+ */
 export async function handleEditEvent(interaction: ButtonInteraction) {
   const message = interaction.message;
   const embed = message.embeds[0];
@@ -34,6 +40,10 @@ export async function handleEditEvent(interaction: ButtonInteraction) {
   await interaction.showModal(modal);
 }
 
+/**
+ * Handle the Delete Event button for an existing event.
+ * @param interaction The interaction object to use when presenting the modal
+ */
 export async function handleDeleteEvent(interaction: ButtonInteraction) {
   const modal = new ModalBuilder()
     .setCustomId(MODAL.EVENT_DELETE)
