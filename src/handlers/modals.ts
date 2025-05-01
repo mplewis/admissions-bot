@@ -24,6 +24,7 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
 		datetime: interaction.fields.getTextInputValue(FIELD.DATETIME),
 		durationStr: interaction.fields.getTextInputValue(FIELD.DURATION),
 		location: interaction.fields.getTextInputValue(FIELD.LOCATION),
+		creatorId: interaction.user.id,
 	};
 	setLastUserSubmittedEvent(interaction.user.id, eventData);
 
@@ -67,6 +68,7 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
 		durationStr: interaction.fields.getTextInputValue(FIELD.DURATION),
 		location: interaction.fields.getTextInputValue(FIELD.LOCATION),
 		existingEventName: interaction.message?.embeds[0]?.title ?? undefined,
+		creatorId: interaction.user.id,
 	};
 	setLastUserSubmittedEvent(interaction.user.id, eventData);
 

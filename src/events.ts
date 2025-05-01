@@ -21,6 +21,7 @@ export type EventData = {
 	durationStr: string;
 	location: string;
 	existingEventName?: string;
+	creatorId: string;
 };
 
 type DiscordError = {
@@ -69,6 +70,7 @@ export function createEventEmbed({
 	datetime,
 	durationStr,
 	location,
+	creatorId,
 }: EventData) {
 	return new EmbedBuilder()
 		.setTitle(title)
@@ -76,7 +78,8 @@ export function createEventEmbed({
 		.addFields(
 			{ name: FIELD.DATETIME, value: datetime, inline: true },
 			{ name: FIELD.DURATION, value: durationStr, inline: true },
-			{ name: FIELD.LOCATION, value: location, inline: true }
+			{ name: FIELD.LOCATION, value: location, inline: true },
+			{ name: 'Created by', value: `<@${creatorId}>`, inline: true }
 		)
 		.setColor('#0099ff');
 }
@@ -121,13 +124,14 @@ export async function createOrUpdateEvent(
 	const endDateTime = dayjs(eventDateTime).add(parsedDuration.durationSecs, 'seconds').toDate();
 
 	try {
+		const descriptionWithCreator = `${eventData.description}\n\nCreated by <@${eventData.creatorId}>`;
 		if (eventData.existingEventName) {
 			const events = await interaction.guild?.scheduledEvents.fetch();
 			const event = events?.find((e) => e.name === eventData.existingEventName);
 			if (event) {
 				await event.edit({
 					name: eventData.title,
-					description: eventData.description,
+					description: descriptionWithCreator,
 					scheduledStartTime: eventDateTime,
 					scheduledEndTime: endDateTime,
 					entityMetadata: { location: eventData.location },
@@ -136,7 +140,7 @@ export async function createOrUpdateEvent(
 		} else {
 			await interaction.guild?.scheduledEvents.create({
 				name: eventData.title,
-				description: eventData.description,
+				description: descriptionWithCreator,
 				scheduledStartTime: eventDateTime,
 				scheduledEndTime: endDateTime,
 				privacyLevel: 2, // Guild only
