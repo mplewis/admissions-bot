@@ -62,6 +62,8 @@ function registerInteractionHandlers(client: Client) {
 			return;
 		}
 	});
+
+	console.log('Registered interaction handlers');
 }
 
 function main() {
@@ -79,6 +81,8 @@ function main() {
 		await registerCommands();
 		await registerInteractionHandlers(client);
 		await refreshCreateEventButton(client);
+
+		console.log('Ready to go!');
 	});
 
 	client.on('error', console.error);

@@ -11,6 +11,7 @@ import { BUTTON, CHANNEL } from './constants';
 export async function refreshCreateEventButton(client: Client) {
 	await deleteCreateEventButton(client);
 	await createCreateEventButton(client);
+	console.log('Refreshed create event button');
 }
 
 function isActionRow(component: {

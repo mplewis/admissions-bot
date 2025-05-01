@@ -37,9 +37,13 @@ async function handleDiscordError(error: any, interaction: ModalSubmitInteractio
 	console.error('Error creating/updating event:', error);
 	let errorCount: number | undefined;
 	const errors = error.rawError?.errors || {};
-	const messages = Object.values(errors)
-		.map((e) => (e as DiscordError)._errors?.[0]?.message)
-		.filter(Boolean);
+	const messages = [
+		...new Set(
+			Object.values(errors)
+				.map((e) => (e as DiscordError)._errors?.[0]?.message)
+				.filter(Boolean)
+		),
+	];
 
 	if (messages.length > 0) errorCount = messages.length;
 	const countMsg = errorCount

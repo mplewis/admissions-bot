@@ -17,5 +17,5 @@ export async function registerCommands() {
 	await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), {
 		body: commands,
 	});
-	console.log('Successfully registered slash commands');
+	console.log('Registered slash commands');
 }
