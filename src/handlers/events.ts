@@ -12,6 +12,23 @@ import { MODAL } from '../constants';
 import { buildEventModalBody } from '../ui';
 
 /**
+ * Handle the Create Event button for a new event.
+ * @param interaction The interaction object to use when presenting the modal
+ */
+export async function handleCreateEvent(interaction: ButtonInteraction) {
+	const modal = new ModalBuilder()
+		.setCustomId(MODAL.CREATE_EVENT)
+		.setTitle('Create Event')
+		.addComponents(
+			buildEventModalBody({
+				userId: interaction.user.id,
+			})
+		);
+
+	await interaction.showModal(modal);
+}
+
+/**
  * Handle the Edit Event button for an existing event.
  * @param interaction The interaction object to use when presenting the modal
  */

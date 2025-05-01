@@ -4,7 +4,8 @@ import { registerCommands } from './commands';
 import { CMD, MODAL, BUTTON } from './constants';
 import { handleEventCommand } from './handlers/commands';
 import { handleEditModal, handleCreateModal, handleDeleteConfirmModal } from './handlers/modals';
-import { handleDeleteEvent, handleEditEvent, handleNewEvent } from './handlers/events';
+import { handleCreateEvent, handleDeleteEvent, handleEditEvent } from './handlers/events';
+import { refreshCreateEventButton } from './messages';
 
 const client = new Client({
 	intents: [
@@ -14,58 +15,75 @@ const client = new Client({
 	],
 });
 
-client.once('ready', async () => {
-	console.log(`Logged in as ${client.user?.tag}`);
-
-	console.log('Connected to the following guilds:');
-	for (const guild of client.guilds.cache.values()) {
-		const eventsChannel = guild.channels.cache.find(
-			(channel) => channel.name === 'events' && channel.type === ChannelType.GuildText
-		);
-		console.log(`  ${guild.name} (${guild.id})${eventsChannel ? ' ✓' : ' ✗'}`);
-	}
-
-	await registerCommands();
-});
-
-client.on('interactionCreate', async (interaction) => {
-	if (interaction.isCommand()) {
-		switch (interaction.commandName) {
-			case CMD.EVENT:
-				await handleEventCommand(interaction);
-				break;
+function registerInteractionHandlers(client: Client) {
+	client.on('interactionCreate', async (interaction) => {
+		if (interaction.isCommand()) {
+			switch (interaction.commandName) {
+				case CMD.EVENT:
+					await handleEventCommand(interaction);
+					break;
+				default:
+					console.error(`Unhandled command interaction: ${interaction.commandName}`);
+			}
+			return;
 		}
-		return;
-	}
 
-	if (interaction.isModalSubmit()) {
-		switch (interaction.customId) {
-			case MODAL.CREATE_EVENT:
-				await handleCreateModal(interaction);
-				break;
-			case MODAL.EDIT_EVENT:
-				await handleEditModal(interaction);
-				break;
-			case MODAL.DELETE_EVENT:
-				await handleDeleteConfirmModal(interaction);
-				break;
+		if (interaction.isModalSubmit()) {
+			switch (interaction.customId) {
+				case MODAL.CREATE_EVENT:
+					await handleCreateModal(interaction);
+					break;
+				case MODAL.EDIT_EVENT:
+					await handleEditModal(interaction);
+					break;
+				case MODAL.DELETE_EVENT:
+					await handleDeleteConfirmModal(interaction);
+					break;
+				default:
+					console.error(`Unhandled modal interaction: ${interaction.customId}`);
+			}
+			return;
 		}
-		return;
-	}
 
-	if (interaction.isButton()) {
-		switch (interaction.customId) {
-			case BUTTON.EDIT_EVENT:
-				await handleEditEvent(interaction);
-				break;
-			case BUTTON.DELETE_EVENT:
-				await handleDeleteEvent(interaction);
-				break;
+		if (interaction.isButton()) {
+			switch (interaction.customId) {
+				case BUTTON.CREATE_EVENT:
+					await handleCreateEvent(interaction);
+					break;
+				case BUTTON.EDIT_EVENT:
+					await handleEditEvent(interaction);
+					break;
+				case BUTTON.DELETE_EVENT:
+					await handleDeleteEvent(interaction);
+					break;
+				default:
+					console.error(`Unhandled button interaction: ${interaction.customId}`);
+			}
+			return;
 		}
-		return;
-	}
-});
+	});
+}
 
-client.on('error', console.error);
+function main() {
+	client.once('ready', async () => {
+		console.log(`Logged in as ${client.user?.tag}`);
 
-client.login(CONFIG.DISCORD_TOKEN);
+		console.log('Connected to the following guilds:');
+		for (const guild of client.guilds.cache.values()) {
+			const eventsChannel = guild.channels.cache.find(
+				(channel) => channel.name === 'events' && channel.type === ChannelType.GuildText
+			);
+			console.log(`  ${guild.name} (${guild.id})${eventsChannel ? ' ✓' : ' ✗'}`);
+		}
+
+		await registerCommands();
+		await registerInteractionHandlers(client);
+		await refreshCreateEventButton(client);
+	});
+
+	client.on('error', console.error);
+
+	client.login(CONFIG.DISCORD_TOKEN);
+}
+
+main();

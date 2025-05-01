@@ -11,6 +11,7 @@ import {
 	findEventsChannel,
 } from '../events';
 import { clearLastUserSubmittedEvent, setLastUserSubmittedEvent } from '../cache';
+import { refreshCreateEventButton } from '../messages';
 
 /**
  * Handle submitted data from the Create Event modal.
@@ -51,6 +52,7 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
 	});
 
 	clearLastUserSubmittedEvent(interaction.user.id);
+	await refreshCreateEventButton(interaction.client);
 }
 
 /**
