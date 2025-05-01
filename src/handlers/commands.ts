@@ -11,7 +11,7 @@ import { buildEventModalBody } from '../ui';
  */
 export async function handleEventCommand(interaction: CommandInteraction) {
 	const modal = new ModalBuilder()
-		.setCustomId(MODAL.EVENT_CREATE)
+		.setCustomId(MODAL.CREATE_EVENT)
 		.setTitle('Create Event')
 		.addComponents(buildEventModalBody({ userId: interaction.user.id }));
 

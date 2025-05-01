@@ -1,9 +1,9 @@
 // Constants used throughout the app to avoid magic strings
 
 export const MODAL = {
-	EVENT_CREATE: 'event_create',
-	EVENT_EDIT: 'event_edit',
-	EVENT_DELETE: 'event_delete',
+	CREATE_EVENT: 'event_create',
+	EDIT_EVENT: 'event_edit',
+	DELETE_EVENT: 'event_delete',
 } as const;
 
 export const FIELD = {

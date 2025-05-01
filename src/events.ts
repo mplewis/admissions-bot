@@ -6,10 +6,9 @@ import {
 	ButtonStyle,
 	ChannelType,
 	EmbedBuilder,
-	ThreadAutoArchiveDuration,
 	MessageFlags,
 } from 'discord.js';
-import type { Message, ModalSubmitInteraction } from 'discord.js';
+import type { ModalSubmitInteraction } from 'discord.js';
 import dayjs from 'dayjs';
 import { BUTTON, CHANNEL, FIELD } from './constants';
 import { parseDuration } from './datetime';
@@ -161,23 +160,11 @@ export async function findEventsChannel(interaction: ModalSubmitInteraction) {
 
 	if (!eventsChannel || !('send' in eventsChannel)) {
 		await interaction.reply({
-			content: `Could not find the #${CHANNEL.EVENTS} channel to start a discussion thread for your new event. Please ask your server admin to create one.`,
+			content: `Could not find the #${CHANNEL.EVENTS} channel to start a discussion thread for your event. Please ask your server admin to create this channel.`,
 			flags: [MessageFlags.Ephemeral],
 		});
 		return null;
 	}
 
 	return eventsChannel;
-}
-
-/**
- * Create a thread for an event attached to the event's message.
- * @param message The message object to use when creating the thread
- * @param title The title of the thread
- */
-export async function createEventThread(message: Message<boolean>, title: string) {
-	await message.startThread({
-		name: `${title} Discussion`,
-		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-	});
 }

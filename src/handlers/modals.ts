@@ -2,14 +2,13 @@
 
 import type { ModalSubmitInteraction } from 'discord.js';
 import { FIELD } from '../constants';
-import { MessageFlags } from 'discord.js';
+import { MessageFlags, ThreadAutoArchiveDuration } from 'discord.js';
 import {
 	EventData,
 	createEventEmbed,
 	createEventButtons,
 	createOrUpdateEvent,
 	findEventsChannel,
-	createEventThread,
 } from '../events';
 import { clearLastUserSubmittedEvent, setLastUserSubmittedEvent } from '../cache';
 
@@ -41,7 +40,10 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
 		components: [buttons],
 	});
 
-	await createEventThread(message, eventData.title);
+	await message.startThread({
+		name: `${eventData.title} Discussion`,
+		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+	});
 
 	await interaction.reply({
 		content: 'Event created successfully!',
@@ -73,6 +75,9 @@ export async function handleEditModal(interaction: ModalSubmitInteraction) {
 	const buttons = createEventButtons();
 
 	await interaction.message?.edit({ embeds: [embed], components: [buttons] });
+
+	if (interaction.message?.thread)
+		await interaction.message.thread.setName(`${eventData.title} Discussion`);
 
 	await interaction.reply({
 		content: 'Event updated successfully!',

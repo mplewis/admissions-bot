@@ -28,7 +28,7 @@ export async function handleEditEvent(interaction: ButtonInteraction) {
 	}
 
 	const modal = new ModalBuilder()
-		.setCustomId(MODAL.EVENT_EDIT)
+		.setCustomId(MODAL.EDIT_EVENT)
 		.setTitle('Edit Event')
 		.addComponents(
 			buildEventModalBody({
@@ -46,7 +46,7 @@ export async function handleEditEvent(interaction: ButtonInteraction) {
  */
 export async function handleDeleteEvent(interaction: ButtonInteraction) {
 	const modal = new ModalBuilder()
-		.setCustomId(MODAL.EVENT_DELETE)
+		.setCustomId(MODAL.DELETE_EVENT)
 		.setTitle('Confirm Event Deletion')
 		.addComponents(
 			new ActionRowBuilder<TextInputBuilder>().addComponents(
