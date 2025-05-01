@@ -5,7 +5,10 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"start": "tsx src/index.ts",
-		"dev": "tsx watch src/index.ts"
+		"dev": "tsx watch src/index.ts",
+		"lint": "eslint . --ext .ts",
+		"lint:fix": "eslint . --ext .ts --fix",
+		"format": "prettier --write \"**/*.{ts,json}\""
 	},
 	"dependencies": {
 		"dayjs": "^1.11.10",
@@ -15,6 +18,12 @@
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.24",
+		"@typescript-eslint/eslint-plugin": "^8.31.1",
+		"@typescript-eslint/parser": "^8.31.1",
+		"eslint": "^9.25.1",
+		"eslint-config-prettier": "^10.1.2",
+		"eslint-plugin-prettier": "^5.2.6",
+		"prettier": "^3.5.3",
 		"typescript": "^5.3.3"
 	}
 }

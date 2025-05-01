@@ -1,7 +1,7 @@
 // Cache for last user submitted event. Helps users avoid having to re-enter
 // data when they make a mistake and the form data is invalid.
 
-import { EventData } from "./events";
+import { EventData } from './events';
 
 const lastUserSubmittedEvent: Record<string, EventData> = {};
 
@@ -11,7 +11,7 @@ const lastUserSubmittedEvent: Record<string, EventData> = {};
  * @returns The last submitted event for the user, if any
  */
 export function getLastUserSubmittedEvent(userId: string) {
-  return lastUserSubmittedEvent[userId];
+	return lastUserSubmittedEvent[userId];
 }
 
 /**
@@ -22,11 +22,8 @@ export function getLastUserSubmittedEvent(userId: string) {
  * @param userId The user ID for whom to set the last submitted event
  * @param eventData The event data to set
  */
-export function setLastUserSubmittedEvent(
-  userId: string,
-  eventData: EventData
-) {
-  lastUserSubmittedEvent[userId] = eventData;
+export function setLastUserSubmittedEvent(userId: string, eventData: EventData) {
+	lastUserSubmittedEvent[userId] = eventData;
 }
 
 /**
@@ -36,5 +33,5 @@ export function setLastUserSubmittedEvent(
  * @param userId The user ID for whom to clear the last submitted event
  */
 export function clearLastUserSubmittedEvent(userId: string) {
-  delete lastUserSubmittedEvent[userId];
+	delete lastUserSubmittedEvent[userId];
 }
