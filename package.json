@@ -6,9 +6,9 @@
 	"scripts": {
 		"start": "tsx src/index.ts",
 		"dev": "tsx watch src/index.ts",
-		"lint": "eslint . --ext .ts",
-		"lint:fix": "eslint . --ext .ts --fix",
-		"format": "prettier --write \"**/*.{ts,json}\""
+		"lint": "eslint . --ext .ts && prettier --check .",
+		"lint:fix": "eslint . --ext .ts --fix && prettier --write .",
+		"test": "vitest"
 	},
 	"dependencies": {
 		"dayjs": "^1.11.10",
@@ -23,7 +23,9 @@
 		"eslint": "^9.25.1",
 		"eslint-config-prettier": "^10.1.2",
 		"eslint-plugin-prettier": "^5.2.6",
+		"globals": "^16.0.0",
 		"prettier": "^3.5.3",
-		"typescript": "^5.3.3"
+		"typescript": "^5.3.3",
+		"vitest": "^3.1.2"
 	}
 }

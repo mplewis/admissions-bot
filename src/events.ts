@@ -9,7 +9,7 @@ import {
 	ThreadAutoArchiveDuration,
 	MessageFlags,
 } from 'discord.js';
-import type { ModalSubmitInteraction } from 'discord.js';
+import type { Message, ModalSubmitInteraction } from 'discord.js';
 import dayjs from 'dayjs';
 import { BUTTON, CHANNEL, FIELD } from './constants';
 import { parseDuration } from './datetime';
@@ -33,6 +33,7 @@ type DiscordError = {
  * @param error The error to handle
  * @param interaction The interaction object to use when presenting the error message to the user
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleDiscordError(error: any, interaction: ModalSubmitInteraction) {
 	console.error('Error creating/updating event:', error);
 	let errorCount: number | undefined;
@@ -114,9 +115,7 @@ export async function createOrUpdateEvent(
 		});
 		return false;
 	}
-	const { duration } = parsedDuration;
-	if (!duration) return false;
-	const endDateTime = dayjs(eventDateTime).add(duration).toDate();
+	const endDateTime = dayjs(eventDateTime).add(parsedDuration.durationSecs, 'seconds').toDate();
 
 	try {
 		if (eventData.existingEventName) {
@@ -142,7 +141,7 @@ export async function createOrUpdateEvent(
 				entityMetadata: { location: eventData.location },
 			});
 		}
-	} catch (error: any) {
+	} catch (error) {
 		await handleDiscordError(error, interaction);
 		return false;
 	}
@@ -176,7 +175,7 @@ export async function findEventsChannel(interaction: ModalSubmitInteraction) {
  * @param message The message object to use when creating the thread
  * @param title The title of the thread
  */
-export async function createEventThread(message: any, title: string) {
+export async function createEventThread(message: Message<boolean>, title: string) {
 	await message.startThread({
 		name: `${title} Discussion`,
 		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,

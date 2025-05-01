@@ -1,10 +1,5 @@
 // Parsing and manipulating dates and times
 
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-
-dayjs.extend(duration);
-
 const INVALID_DURATION_MSG =
 	'Invalid duration format. Please provide a duration such as "30m", "1hr", "2 days".';
 
@@ -15,16 +10,18 @@ const INVALID_DURATION_MSG =
  */
 export function parseDuration(
 	durationStr: string
-):
-	| { success: true; duration: ReturnType<typeof dayjs.duration> }
-	| { success: false; error: string } {
+): { success: true; durationSecs: number } | { success: false; error: string } {
 	const match = durationStr.match(/^(\d+)\s*([a-z]+)$/i);
 	if (!match) return { success: false, error: INVALID_DURATION_MSG };
 
-	const [, number, unit] = match;
-	const duration = dayjs.duration(Number(number), unit as any);
+	const [, amount, unit] = match;
+	const num = parseInt(amount, 10);
+	if (isNaN(num)) return { success: false, error: INVALID_DURATION_MSG };
 
-	if (!duration.asMilliseconds()) return { success: false, error: INVALID_DURATION_MSG };
+	const multipliers: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400 };
+	const multiplier = multipliers[unit[0].toLowerCase()];
+	if (!multiplier) return { success: false, error: INVALID_DURATION_MSG };
 
-	return { success: true, duration };
+	const durationSecs = num * multiplier;
+	return { success: true, durationSecs };
 }
