@@ -1,7 +1,7 @@
 import { Client, GatewayIntentBits, ChannelType } from 'discord.js';
 import { CONFIG } from './config';
 import { registerCommands } from './commands';
-import { CMD, MODAL, BUTTON } from './constants';
+import { CMD, MODAL, BUTTON, CHANNEL } from './constants';
 import { handleEventCommand } from './handlers/commands';
 import { handleEditModal, handleCreateModal, handleDeleteConfirmModal } from './handlers/modals';
 import { handleCreateEvent, handleDeleteEvent, handleEditEvent } from './handlers/events';
@@ -73,7 +73,7 @@ function main() {
 		console.log('Connected to the following guilds:');
 		for (const guild of client.guilds.cache.values()) {
 			const eventsChannel = guild.channels.cache.find(
-				(channel) => channel.name === 'events' && channel.type === ChannelType.GuildText
+				(channel) => channel.name === CHANNEL.EVENTS && channel.type === ChannelType.GuildText
 			);
 			console.log(`  ${guild.name} (${guild.id})${eventsChannel ? ' ✓' : ' ✗'}`);
 		}
