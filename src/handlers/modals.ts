@@ -36,12 +36,10 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
 
 	const embed = createEventEmbed(eventData);
 	const buttons = createEventButtons();
-
 	const message = await eventsChannel.send({
 		embeds: [embed],
 		components: [buttons],
 	});
-
 	await message.startThread({
 		name: `${eventData.title} Discussion`,
 		autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
@@ -51,9 +49,8 @@ export async function handleCreateModal(interaction: ModalSubmitInteraction) {
 		content: 'Event created successfully!',
 		flags: [MessageFlags.Ephemeral],
 	});
-
 	clearLastUserSubmittedEvent(interaction.user.id);
-	await refreshCreateEventButton(interaction.client);
+	refreshCreateEventButton(interaction.client);
 }
 
 /**
