@@ -4,9 +4,11 @@ const tsparser = require('@typescript-eslint/parser');
 const prettier = require('eslint-plugin-prettier');
 const eslintConfigPrettier = require('eslint-config-prettier');
 const globals = require('globals');
+const { globalIgnores } = require('eslint/config');
 
 module.exports = [
 	eslint.configs.recommended,
+	globalIgnores(['dist/*', 'eslint.config.js']),
 	{
 		files: ['**/*.ts'],
 		languageOptions: {
@@ -25,20 +27,6 @@ module.exports = [
 			...tseslint.configs.recommended.rules,
 			'prettier/prettier': ['error', { useTabs: true }],
 			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-			indent: ['error', 'tab'],
-		},
-	},
-	{
-		files: ['**/*.js'],
-		languageOptions: {
-			parserOptions: {
-				ecmaVersion: 'latest',
-				sourceType: 'module',
-			},
-			globals: { ...globals.node },
-		},
-		rules: {
-			'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 			indent: ['error', 'tab'],
 		},
 	},

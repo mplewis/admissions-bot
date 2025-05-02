@@ -2,6 +2,7 @@
 	"name": "discovent",
 	"version": "1.0.0",
 	"description": "Discord bot for managing events",
+	"packageManager": "pnpm@10.10.0",
 	"engines": {
 		"node": ">=22.0.0"
 	},
@@ -11,8 +12,8 @@
 		"build": "tsc",
 		"dev": "tsx src/index.ts",
 		"dev:watch": "tsx watch src/index.ts",
-		"lint": "eslint . --ext .ts && prettier --check .",
-		"lint:fix": "eslint . --ext .ts --fix && prettier --write .",
+		"lint": "eslint && prettier --check .",
+		"lint:fix": "eslint --fix && prettier --write .",
 		"test": "vitest"
 	},
 	"dependencies": {
