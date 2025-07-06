@@ -10,7 +10,6 @@ const GuildConfigSchema = z.object({
 
 const ConfigSchema = z.object({
 	clientID: z.string(),
-	discordToken: z.string(),
 	guilds: z.array(GuildConfigSchema),
 });
 
@@ -19,12 +18,16 @@ export type Config = z.infer<typeof ConfigSchema>;
 
 let _guildConfig: Config | undefined;
 
+export function mustEnv(key: string): string {
+	const value = process.env[key];
+	if (!value) throw new Error(`${key} environment variable is required`);
+	return value;
+}
+
 export async function loadConfig(): Promise<Config> {
 	if (_guildConfig) return _guildConfig;
 
-	const configPath = process.env.CONFIG_PATH;
-	if (!configPath) throw new Error('CONFIG_PATH environment variable is required');
-
+	const configPath = mustEnv('CONFIG_PATH');
 	const fileContent = await readFile(configPath, 'utf-8');
 	const rawConfig = parse(fileContent);
 	_guildConfig = ConfigSchema.parse(rawConfig);

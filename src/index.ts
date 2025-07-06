@@ -3,9 +3,11 @@ import dotenv from 'dotenv';
 import { handleJoin } from './handlers/join';
 import { handleDM } from './handlers/dm';
 import log from './logger';
-import { loadConfig } from './config';
+import { loadConfig, mustEnv } from './config';
 
 dotenv.config();
+
+const discordToken = mustEnv('DISCORD_TOKEN');
 
 const intents = [
 	GatewayIntentBits.Guilds,
@@ -16,14 +18,14 @@ const intents = [
 ];
 
 async function main() {
-	const config = await loadConfig();
+	await loadConfig();
 	const client = new Client({ intents });
 	client.once(Events.ClientReady, () => {
 		log.info({ user: client.user?.tag }, 'Bot logged in');
 	});
 	client.on(Events.GuildMemberAdd, handleJoin);
 	client.on(Events.MessageCreate, handleDM);
-	client.login(config.discordToken);
+	client.login(discordToken);
 }
 
 main();
