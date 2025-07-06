@@ -1,18 +1,37 @@
-// Configuration values used throughout the app
+import { z } from 'zod';
+import { parse } from 'yaml';
+import { readFile } from 'fs/promises';
 
-import { config } from 'dotenv';
+const GuildConfigSchema = z.object({
+	id: z.string(),
+	channelName: z.string(),
+	welcomeMsg: z.string(),
+});
 
-config();
+const ConfigSchema = z.object({
+	clientID: z.string(),
+	discordToken: z.string(),
+	guilds: z.array(GuildConfigSchema),
+});
 
-function mustEnv(name: string): string {
-	const value = process.env[name];
-	if (!value) throw new Error(`Missing required environment variable: ${name}`);
-	return value;
+export type GuildConfig = z.infer<typeof GuildConfigSchema>;
+export type Config = z.infer<typeof ConfigSchema>;
+
+let _guildConfig: Config | undefined;
+
+export async function loadConfig(): Promise<Config> {
+	if (_guildConfig) return _guildConfig;
+
+	const configPath = process.env.CONFIG_PATH;
+	if (!configPath) throw new Error('CONFIG_PATH environment variable is required');
+
+	const fileContent = await readFile(configPath, 'utf-8');
+	const rawConfig = parse(fileContent);
+	_guildConfig = ConfigSchema.parse(rawConfig);
+	return _guildConfig;
 }
 
-export const CONFIG = {
-	DISCORD_TOKEN: mustEnv('DISCORD_TOKEN'),
-	CLIENT_ID: mustEnv('CLIENT_ID'),
-} as const;
-
-export type Config = typeof CONFIG;
+export async function getGuildConfig(guildID: string): Promise<GuildConfig | undefined> {
+	const config = await loadConfig();
+	return config.guilds.find((guild) => guild.id === guildID);
+}

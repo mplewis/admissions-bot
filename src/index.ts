@@ -1,93 +1,29 @@
-import { Client, GatewayIntentBits, ChannelType } from 'discord.js';
-import { CONFIG } from './config';
-import { registerCommands } from './commands';
-import { CMD, MODAL, BUTTON, CHANNEL } from './constants';
-import { handleEventCommand } from './handlers/commands';
-import { handleEditModal, handleCreateModal, handleDeleteConfirmModal } from './handlers/modals';
-import { handleCreateEvent, handleDeleteEvent, handleEditEvent } from './handlers/events';
-import { refreshCreateEventButton } from './messages';
+import { Client, GatewayIntentBits, Events } from 'discord.js';
+import dotenv from 'dotenv';
+import { handleJoin } from './handlers/join';
+import { handleDM } from './handlers/dm';
+import log from './logger';
+import { loadConfig } from './config';
 
-const client = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.GuildScheduledEvents,
-	],
-});
+dotenv.config();
 
-function registerInteractionHandlers(client: Client) {
-	client.on('interactionCreate', async (interaction) => {
-		if (interaction.isCommand()) {
-			switch (interaction.commandName) {
-				case CMD.EVENT:
-					await handleEventCommand(interaction);
-					break;
-				default:
-					console.error(`Unhandled command interaction: ${interaction.commandName}`);
-			}
-			return;
-		}
+const intents = [
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMembers,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.DirectMessages,
+	GatewayIntentBits.MessageContent,
+];
 
-		if (interaction.isModalSubmit()) {
-			switch (interaction.customId) {
-				case MODAL.CREATE_EVENT:
-					await handleCreateModal(interaction);
-					break;
-				case MODAL.EDIT_EVENT:
-					await handleEditModal(interaction);
-					break;
-				case MODAL.DELETE_EVENT:
-					await handleDeleteConfirmModal(interaction);
-					break;
-				default:
-					console.error(`Unhandled modal interaction: ${interaction.customId}`);
-			}
-			return;
-		}
-
-		if (interaction.isButton()) {
-			switch (interaction.customId) {
-				case BUTTON.CREATE_EVENT:
-					await handleCreateEvent(interaction);
-					break;
-				case BUTTON.EDIT_EVENT:
-					await handleEditEvent(interaction);
-					break;
-				case BUTTON.DELETE_EVENT:
-					await handleDeleteEvent(interaction);
-					break;
-				default:
-					console.error(`Unhandled button interaction: ${interaction.customId}`);
-			}
-			return;
-		}
+async function main() {
+	const config = await loadConfig();
+	const client = new Client({ intents });
+	client.once(Events.ClientReady, () => {
+		log.info({ user: client.user?.tag }, 'Bot logged in');
 	});
-
-	console.log('Registered interaction handlers');
-}
-
-function main() {
-	client.once('ready', async () => {
-		console.log(`Logged in as ${client.user?.tag}`);
-
-		console.log('Connected to the following guilds:');
-		for (const guild of client.guilds.cache.values()) {
-			const eventsChannel = guild.channels.cache.find(
-				(channel) => channel.name === CHANNEL.EVENTS && channel.type === ChannelType.GuildText
-			);
-			console.log(`  ${guild.name} (${guild.id})${eventsChannel ? ' ✓' : ' ✗'}`);
-		}
-
-		await registerCommands();
-		await registerInteractionHandlers(client);
-		await refreshCreateEventButton(client);
-
-		console.log('Ready to go!');
-	});
-
-	client.on('error', console.error);
-
-	client.login(CONFIG.DISCORD_TOKEN);
+	client.on(Events.GuildMemberAdd, handleJoin);
+	client.on(Events.MessageCreate, handleDM);
+	client.login(config.discordToken);
 }
 
 main();

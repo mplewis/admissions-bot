@@ -1,0 +1,12 @@
+# Get these from https://discord.com/developers/applications
+clientID: '1234567890123456789'
+discordToken: SOME-BIG-LONG-TOKEN-GOES-HERE
+
+guilds:
+  - id: '123456789012345678'
+    channelName: 'introductions'
+    welcomeMsg: 'Welcome to our server! Please introduce yourself in a DM to me.'
+
+  - id: '987654321098765432'
+    channelName: 'new-members'
+    welcomeMsg: "Hey there! We're excited to have you join us. Send me a message to introduce yourself!"
