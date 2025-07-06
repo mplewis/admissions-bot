@@ -27,16 +27,17 @@ pnpm install
 `config.yaml` example:
 
 ```yaml
-clientID: '123456789012345678'
+clientID: 'YOUR_CLIENT_ID'
 guilds:
   - id: 'YOUR_GUILD_ID'
-    channelName: 'introductions'
-    welcomeMsg: 'Welcome! Please introduce yourself by replying to this DM.'
+    channel: introductions
+    msg: |
+			Welcome! Please introduce yourself by replying to this DM.
 ```
 
 - `id` – Guild/server ID
-- `channelName` – Channel where DMs from users are forwarded
-- `welcomeMsg` – DM sent to new members
+- `channel` – Channel where DMs from users are forwarded
+- `msg` – DM sent to new members
 
 # Usage
 

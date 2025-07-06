@@ -32,12 +32,12 @@ export async function handleDM(message: Message) {
 			(channel): channel is TextChannel =>
 				channel instanceof TextChannel &&
 				channel.guild.id === targetGuild.id &&
-				channel.name === guildConfig.channelName
+				channel.name === guildConfig.channel
 		);
 
 		if (!channel) {
 			log.error(
-				{ channel: guildConfig.channelName, guildID: targetGuild.id },
+				{ channel: guildConfig.channel, guildID: targetGuild.id },
 				'Channel not found in guild'
 			);
 			return;

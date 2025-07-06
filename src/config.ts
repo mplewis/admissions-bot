@@ -4,8 +4,8 @@ import { readFile } from 'fs/promises';
 
 const GuildConfigSchema = z.object({
 	id: z.string(),
-	channelName: z.string(),
-	welcomeMsg: z.string(),
+	channel: z.string(),
+	msg: z.string(),
 });
 
 const ConfigSchema = z.object({

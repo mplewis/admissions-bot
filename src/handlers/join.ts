@@ -9,7 +9,7 @@ export async function handleJoin(member: GuildMember) {
 		return;
 	}
 
-	const msg = guildConfig.welcomeMsg;
+	const { msg } = guildConfig;
 	try {
 		await member.send(msg);
 		log.info({ user: member.user.tag, guild: member.guild.name, content: msg }, 'Sent welcome DM');
