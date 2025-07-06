@@ -1,5 +1,5 @@
 {
-	"name": "discovent",
+	"name": "admissions-bot",
 	"version": "1.0.0",
 	"description": "Discord bot for managing events",
 	"packageManager": "pnpm@10.10.0",

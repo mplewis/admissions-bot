@@ -38,4 +38,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/discovent:latest,${{ secrets.DOCKER_HUB_USERNAME }}/discovent:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest,${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
